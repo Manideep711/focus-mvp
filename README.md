@@ -81,7 +81,15 @@ Unconfigured AI returns an explicit unavailable response and offers manual organ
 
 See [Groq structured outputs](https://console.groq.com/docs/structured-outputs), [Groq API reference](https://console.groq.com/docs/api-reference), and [Pages Functions](https://developers.cloudflare.com/pages/functions/).
 
-## Cloudflare Pages deployment
+## Vercel deployment
+
+Import the GitHub repository and select the Vite preset, `npm run build`, and output directory `dist`. `api/ai.ts` and `api/account.ts` use Vercel's Node.js Web Request handlers and delegate to the same validated server implementation. `vercel.json` supplies security headers, permits same-origin microphone access, and allows 60 seconds for API calls. Navigation uses hash routes, so no catch-all rewrite should hide the API routes.
+
+Import `.env.vercel.local` into the project's environment variables if you generated it locally. That file contains private credentials and is ignored by Git. The required names are `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_GOOGLE_AUTH_ENABLED`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `GROQ_API_KEY`, and `AI_MODEL`. `SUPABASE_SERVICE_ROLE_KEY` is optional for account deletion only. Set Production and, if needed, Preview scopes, then redeploy. Never prefix server secrets with `VITE_`.
+
+In Supabase Authentication URL Configuration, set the production Site URL to your deployed origin and add that origin to Redirect URLs. Google stays disabled until its OAuth credentials are configured. Live email delivery and microphone recognition still require browser verification on the deployed site.
+
+## Cloudflare Pages deployment (alternative)
 
 1. Connect this repository to a Pages project.
 2. Use `npm run build` as the build command and `dist` as the output directory.

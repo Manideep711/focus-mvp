@@ -13,3 +13,4 @@ test-results/
 *.tsbuildinfo
 supabase/.temp/
 .wrangler/
+.vercel/
