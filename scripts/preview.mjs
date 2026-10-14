@@ -1,0 +1,46 @@
+import { chromium } from '@playwright/test'
+import { mkdir } from 'node:fs/promises'
+
+// Isolated browser context: does not modify the user's local workspace.
+await mkdir('artifacts', { recursive: true })
+const browser = await chromium.launch()
+const context = await browser.newContext({ viewport: { width: 1440, height: 1024 } })
+const page = await context.newPage()
+await page.emulateMedia({ reducedMotion: 'reduce' })
+await page.addInitScript(() => {
+  sessionStorage.setItem('focus.workspace.mode', 'local')
+  sessionStorage.setItem('focus.today.view', 'full')
+})
+const errors = []
+page.on('pageerror', (error) => errors.push(error.message))
+await page.goto(process.env.FOCUS_PREVIEW_URL || 'http://127.0.0.1:5173/')
+await page.getByRole('heading', { name: 'Make room for what matters.' }).waitFor()
+await page.evaluate(() => document.fonts.ready)
+await page.screenshot({ path: 'artifacts/today-empty.png', fullPage: true })
+await page.getByRole('button', { name: 'Settings', exact: true }).click()
+await page.getByRole('button', { name: 'Try a clearly labeled example' }).click()
+await page.getByRole('heading', { name: 'Work through the next course lesson' }).waitFor()
+await page.getByRole('button', { name: 'Dismiss notification' }).click()
+await page.screenshot({ path: 'artifacts/today-desktop.png', fullPage: true })
+await page
+  .getByRole('navigation', { name: 'Main navigation' })
+  .getByRole('button', { name: 'Goals', exact: true })
+  .click()
+await page.getByRole('button', { name: 'Open goal' }).first().click()
+await page.screenshot({ path: 'artifacts/goal-desktop.png', fullPage: true })
+await page.getByRole('button', { name: 'Focus', exact: true }).click()
+await page.screenshot({ path: 'artifacts/focus-desktop.png', fullPage: true })
+await page.getByRole('button', { name: 'Return to workspace' }).click()
+await page
+  .getByRole('navigation', { name: 'Main navigation' })
+  .getByRole('button', { name: 'Today', exact: true })
+  .click()
+await page.setViewportSize({ width: 390, height: 844 })
+await page.screenshot({ path: 'artifacts/today-mobile.png', fullPage: false })
+await page.getByRole('button', { name: 'One thing at a time', exact: true }).click()
+await page.screenshot({ path: 'artifacts/calm-mobile.png', fullPage: false })
+await page.setViewportSize({ width: 1440, height: 1024 })
+await page.screenshot({ path: 'artifacts/calm-desktop.png', fullPage: false })
+await browser.close()
+if (errors.length) throw new Error(errors.join('\n'))
+console.log('Saved desktop, mobile, goal, and empty-state previews in artifacts/.')

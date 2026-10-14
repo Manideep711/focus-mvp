@@ -1,0 +1,7 @@
+# Copy to .dev.vars. Never commit real keys.
+SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
+GROQ_API_KEY=
+AI_MODEL=openai/gpt-oss-20b
+# Optional: server-only key for account deletion, not needed for AI or normal persistence.
+SUPABASE_SERVICE_ROLE_KEY=

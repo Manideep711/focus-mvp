@@ -1,0 +1,15 @@
+node_modules/
+dist/
+artifacts/
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+playwright-report/
+test-results/
+.playwright-specs/
+*.tsbuildinfo
+supabase/.temp/
+.wrangler/

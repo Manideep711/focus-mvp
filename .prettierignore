@@ -1,0 +1,9 @@
+node_modules
+dist
+artifacts
+package-lock.json
+test-results
+.playwright-specs
+playwright-report
+.wrangler
+supabase/.temp
